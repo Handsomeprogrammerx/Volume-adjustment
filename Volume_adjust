@@ -1,0 +1,14 @@
+    //Copy header from input file to output file
+    uint8_t buffer[HEADER_SIZE];
+    fread(buffer, sizeof(uint8_t), HEADER_SIZE, input);
+    fwrite(buffer, sizeof(uint8_t), HEADER_SIZE, output);
+    //Read samples from input file and write updated data to output file
+    int16_t sample_only;
+    while (fread(&sample_only, sizeof(int16_t), 1, input))
+    {
+        float scaled = sample_only * factor;
+        if (scaled < -32768) scaled = -32768;
+        if (scaled > 32768) scaled = 32768;
+        sample_only = (int16_t)scaled;
+        fwrite(&sample_only, sizeof(int16_t), 1, output);
+    }
